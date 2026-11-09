@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The 2-Minute Reset · Marriage Glitch</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Fraunces";src:url("assets/fraunces-soft-600.ttf") format("truetype");font-weight:600;font-display:swap}
+/* Layout: dark, quiet listening room; one big play control, three steps to remember, one next step. */
+:root{
+  --noite:#2E1830; --ber:#48264A; --creme:#F6EBDD; --malva:#B9A3C1; --ambar:#C48A28; --uva:#602C6B;
+  --display:"Fraunces", Georgia, serif; --body:"DM Sans", system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(ellipse at 50% 20%, #5A3160 0%, var(--ber) 45%, var(--noite) 100%) fixed;background-color:var(--noite);
+  color:var(--creme);font-family:var(--body);font-size:17px;line-height:1.55;min-height:100vh;display:flex;justify-content:center;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:calc(40px + env(safe-area-inset-top, 0px)) calc(40px + env(safe-area-inset-bottom, 0px));}
+main{width:100%;max-width:460px;display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center}
+.icon{width:54px;height:auto}
+h1{font-family:var(--display);font-weight:600;font-size:40px;line-height:1.05;margin:0}
+.lead{margin:-10px 0 0;color:var(--malva)}
+.player{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.play{width:112px;height:112px;border-radius:50%;border:0;background:var(--creme);color:var(--ber);cursor:pointer;display:grid;place-items:center;
+  box-shadow:0 0 0 10px rgba(246,235,221,.08),0 0 60px rgba(246,235,221,.18)}
+.play:focus-visible{outline:3px solid var(--ambar);outline-offset:6px}
+.play svg{width:40px;height:40px}
+.bar{width:100%;height:6px;border-radius:3px;background:rgba(246,235,221,.15);overflow:hidden;cursor:pointer}
+.bar i{display:block;height:100%;width:0;background:var(--ambar)}
+.time{font-variant-numeric:tabular-nums;font-size:14px;color:var(--malva)}
+.steps{list-style:none;margin:0;padding:22px 24px;width:100%;border:1px solid rgba(246,235,221,.18);border-radius:22px;text-align:left;display:flex;flex-direction:column;gap:10px}
+.steps li{display:flex;gap:12px}
+.steps b{color:var(--ambar);font-family:var(--display);font-weight:600;min-width:1.2em}
+.next{font-size:15px;color:var(--malva);max-width:36ch;margin:0}
+.btn{display:block;width:100%;padding:16px 20px;border-radius:999px;background:var(--creme);color:var(--ber);text-decoration:none;font-weight:600}
+.btn:focus-visible{outline:3px solid var(--ambar);outline-offset:3px}
+</style>
+</head>
+<body>
+<main>
+  <img class="icon" src="assets/icon-texture.png" alt="">
+  <h1>The 2-minute reset</h1>
+  <p class="lead">For the middle of a fight. Headphones help. Then press play.</p>
+
+  <div class="player">
+    <!-- Trocar pelo arquivo final do áudio -->
+    <audio id="audio" src="assets/2-minute-reset.mp3" preload="metadata"></audio>
+    <button class="play" id="play" aria-label="Play the 2-minute reset">
+      <svg id="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="bar" id="bar"><i id="fill"></i></div>
+    <div class="time" id="time">0:00 / 2:00</div>
+  </div>
+
+  <ol class="steps" aria-label="The reset, to remember">
+    <li><b>1</b><span>Notice: “This is the glitch.”</span></li>
+    <li><b>2</b><span>Two short breaths in, one long breath out. Three times.</span></li>
+    <li><b>3</b><span>“I want to get this right. Give me a few minutes, and I’ll come back.”</span></li>
+  </ol>
+
+  <p class="next">This helps in the moment. The 30-day Glitch Reset retrains your body so the next fight doesn’t take over so fast.</p>
+  <a class="btn" href="https://marriageglitch.com/">See the 30-day program</a>
+</main>
+<script>
+const a=document.getElementById('audio'),b=document.getElementById('play'),ico=document.getElementById('ico'),
+fill=document.getElementById('fill'),t=document.getElementById('time'),bar=document.getElementById('bar');
+const fmt=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const PLAY='<path d="M8 5v14l11-7z"/>',PAUSE='<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+b.addEventListener('click',()=>{a.paused?a.play():a.pause()});
+a.addEventListener('play',()=>{ico.innerHTML=PAUSE;b.setAttribute('aria-label','Pause')});
+a.addEventListener('pause',()=>{ico.innerHTML=PLAY;b.setAttribute('aria-label','Play the 2-minute reset')});
+a.addEventListener('timeupdate',()=>{fill.style.width=(a.currentTime/(a.duration||120)*100)+'%';t.textContent=fmt(a.currentTime)+' / '+fmt(a.duration||120)});
+bar.addEventListener('click',e=>{if(!a.duration)return;const r=bar.getBoundingClientRect();a.currentTime=(e.clientX-r.left)/r.width*a.duration});
+</script>
+</body>
+</html>
