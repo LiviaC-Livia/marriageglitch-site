@@ -43,6 +43,17 @@ main{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:c
 .social a{color:var(--ber);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
 .social a:hover{border-color:var(--ambar)}
 footer{font-size:12.5px;color:var(--uva);opacity:.8;max-width:34ch}
+button.btn{border:0;cursor:pointer;font-family:inherit}
+div.btn:hover{transform:none}
+.signup{display:flex;flex-direction:column;gap:10px;text-align:left;background:#fff8ef;border:1.5px solid var(--line);border-radius:22px;padding:18px}
+.signup[hidden],.thanks[hidden]{display:none}
+.signup label{font-weight:600;font-size:15px}
+.signup .row{display:flex;gap:8px}
+.signup input[type=email]{flex:1;min-width:0;font:inherit;font-size:16px;padding:13px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ber)}
+.signup input[type=email]:focus{outline:3px solid var(--ambar);outline-offset:1px}
+.signup button{font:inherit;font-weight:600;padding:13px 20px;border-radius:999px;border:0;background:var(--uva);color:var(--creme);cursor:pointer}
+.signup .fine{margin:0;font-size:12.5px;color:var(--uva);opacity:.85}
+.thanks{margin:0;padding:16px;border-radius:22px;background:var(--cha);color:var(--ber);font-weight:500}
 @media (prefers-reduced-motion: reduce){.btn{transition:none}}
 </style>
 </head>
@@ -52,9 +63,19 @@ footer{font-size:12.5px;color:var(--uva);opacity:.8;max-width:34ch}
   <p class="promise">Calm the body first. Then talk.</p>
   <p class="sub">Fifteen minutes a day, each day building on the last, so your body learns to stay calm when a fight starts. You just listen. You can start alone.</p>
   <div class="actions">
-    <!-- Trocar o href pelo link do formulário do MailerLite -->
-    <a class="btn primary" id="cta-free" href="#free-reset">Get the free 2-minute reset<small>For the middle of a fight. Free, sent to your inbox.</small></a>
-    <a class="btn secondary" id="cta-program" href="#program">The 30-day Glitch Reset<small>Opens November 23</small></a>
+    <button type="button" class="btn primary" id="cta-free" aria-expanded="false" aria-controls="free-reset">Get the free 2-minute reset<small>For the middle of a fight. Free, sent to your inbox.</small></button>
+    <form id="free-reset" class="signup" hidden action="https://assets.mailerlite.com/jsonp/2780708/forms/203703835498120784/subscribe" method="post" target="_blank">
+      <label for="email">Where should we send it?</label>
+      <div class="row">
+        <input id="email" type="email" name="fields[email]" placeholder="you@email.com" autocomplete="email" required>
+        <button type="submit">Send it</button>
+      </div>
+      <input type="hidden" name="ml-submit" value="1">
+      <input type="hidden" name="anticsrf" value="true">
+      <p class="fine">One email with the audio, then a few notes from us. Unsubscribe anytime.</p>
+    </form>
+    <p id="thanks" class="thanks" hidden role="status">Sent. Check your inbox (and the promotions tab) for your 2-minute reset.</p>
+    <div class="btn secondary" id="cta-program">The 30-day Glitch Reset<small>Opens November 23</small></div>
   </div>
   <nav class="social" aria-label="Social">
     <a href="https://www.instagram.com/marriageglitch">Instagram</a>
@@ -63,5 +84,20 @@ footer{font-size:12.5px;color:var(--uva);opacity:.8;max-width:34ch}
   </nav>
   <footer>Marriage Glitch is a program for couples working through everyday conflict.</footer>
 </main>
+<script>
+(function(){
+  var cta=document.getElementById('cta-free'), form=document.getElementById('free-reset'), thanks=document.getElementById('thanks');
+  cta.addEventListener('click',function(){form.hidden=false;cta.setAttribute('aria-expanded','true');document.getElementById('email').focus();});
+  if(location.hash==='#free-reset'){form.hidden=false;}
+  form.addEventListener('submit',function(e){
+    if(!window.fetch) return;
+    e.preventDefault();
+    var b=form.querySelector('button[type=submit]'); b.disabled=true; b.textContent='Sending…';
+    fetch(form.action,{method:'POST',body:new FormData(form),mode:'no-cors'})
+      .then(function(){form.hidden=true;cta.hidden=true;thanks.hidden=false;})
+      .catch(function(){b.disabled=false;b.textContent='Send it';form.submit();});
+  });
+})();
+</script>
 </body>
 </html>
